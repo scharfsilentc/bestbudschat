@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import './App.css';
 
-class App extends Component {
-  constructor () {
-    super();
-    this.state = {messages:[ {who: 'sofia', message:'hey!'}],
-                  messages2:[]  }; 
+class Chatbox extends Component {
+  constructor (props) {
+    super(props);
+    this.firstBotName = this.props.firstBotName;
+    this.secondBotName = this.props.secondBotName;
+    this.firstBotThoughts = this.props.firstBotThoughts;
+    this.secondBotThoughts = this.props.secondBotThoughts;
+    this.state = {messages:[]}; 
   }
 
   //this displays the contents of messages by storying them in <li>
@@ -20,78 +23,79 @@ class App extends Component {
     this.scrollDelete();
   }
 
-  // componentWillMount = () => {
-  //   this.userName = prompt("What's your name?");
-  // }
-
+  componentWillMount = () => {
+    this.firstBot();
+    // this.userName = prompt("What's your name?");
+  }
+  
   // this adds the message the user has inputted to a new object in the messages array
  addNewMessage = (event) => { 
-  this.setState( (st) => {
-    var temp = this.textInput.value;
-    this.textInput.value = '';
-    return {messages: st.messages.concat({who: 'you', message: temp})}
+    this.setState( (st) => {
+      var temp = this.textInput.value;
+      this.textInput.value = '';
+      return {messages: st.messages.concat({who: 'you', message: temp})}
+      }
+    );  
+
+      setTimeout(this.secondBot, 1000);
+      this.scrollDelete();
     }
-  );  
-   setTimeout(this.chantalBot, 1000);
-   this.scrollDelete();
-}
 
-// this needs to display a new message from the bot every time the user submits a message
-// 1. it needs an array of messages that it can use 2. it needs those messages to be displayed
-// maybe it can push an object to the messages array 
-// when x happens, push y or z or a//
-//the first time chantalBot has been called i want it to produce 'hey'
-  chantalBot = () => { 
-    var chantalThoughts = ['im basically a starchitect',
-    'sofia i made some lentils', 'im not a bot btw'];
+  firstBot = () => {
+    //set variables
+    //this.firstBotName = "sofia";
+    // var firstBotThoughts = [`thats really cool ${this.secondBotName}`,`im so hungry`,`im going to a Wikipedia editathon later!` ];
     var i = Math.floor(Math.random()*3);
-   
-    this.state.messages.length < 3 ? this.setState((st) => {
-      return {messages: st.messages.concat({who:'chantal', message: 'oh hi'})}
-    }) : this.setState((st) => {
-      return {messages: st.messages.concat({who:'chantal', message: chantalThoughts[i]})}
-    });
-    setTimeout(this.sofiaBot, 1000);
-    this.scrollDelete();
-  }
-
-  sofiaBot = () => {
-    var sofiaThoughts = ['thats really cool Chantal','im so hungry','im going to a Wikipedia editathon later!' ];
-    var i = Math.floor(Math.random()*3);
+    var msg;
+    if(this.state.messages.length >= 2 ){
+      msg = this.firstBotThoughts[i];
+    } else {
+      msg = 'hey!'
+    }
+    
+    //talk
     this.setState((st) => {
-      return {messages: st.messages.concat({who:'sofia', message: sofiaThoughts[i]})}
+      return {messages: st.messages.concat({who: this.firstBotName, message: msg})}
     });
+    
+    //activate other functions
+    this.scrollDelete();
+  
+  }
+  secondBot = () => { 
+    //set variables
+    // this.secondBotName = "chantal";
+    // var secondBotThoughts = [`im basically a starchitect`,
+                            // `${this.firstBotName} i made some lentils`, `im not a bot btw`];
+    var i = Math.floor(Math.random()*3);
+    var msg;
+      if(this.state.messages.length >= 3 ){
+        msg = this.secondBotThoughts[i];
+      } else {
+        msg = 'oh hi'
+      }
+
+    //talk
+    this.setState((st) => {
+      return {messages: st.messages.concat({who: this.secondBotName, message: msg})}
+      })
+  
+      // activate other functions
+    setTimeout(this.firstBot, 1000);
     this.scrollDelete();
   }
 
-  anika
-// when this.state.messages.length > 15 this.state.messages.shift()
   scrollDelete = () => {
     if (this.state.messages.length > 10) {
       this.state.messages.shift();
     }
   }
-
-
- 
     
   render() {
     return (
       <div className="App">
           <div className="chat1">
-            <h3>not-so-lonely-chat a</h3>
-            <div className="banterBox">
-              <ul>
-              {this.state.messages.map((element, idx) => this.displayLine(element, idx))} 
-              </ul>
-              <div className="inputMessage">
-                <input className ="inputArea" type = 'text' ref={(input) => {this.textInput = input; }} placeholder="put it here" />
-                <button onClick={this.addNewMessage}>say it</button>
-              </div>
-            </div>
-          </div>
-          <div className="chat2">
-            <h3>not-so-lonely-chat b</h3>
+            <h3>{this.title}</h3>
             <div className="banterBox">
               <ul>
               {this.state.messages.map((element, idx) => this.displayLine(element, idx))} 
@@ -104,6 +108,30 @@ class App extends Component {
           </div>
       </div>
     );
+  }
+}
+
+class App extends Component { 
+  constructor() {
+    super()
+    this.firstBotThoughts = [`thats really cool chantal`,`im so hungry`,
+                              `im going to a Wikipedia editathon later!`];
+    this.secondBotThoughts = [`im basically a starchitect`,`sofia i made some lentils`, `im not a bot btw`];
+    this.thirdBotThoughts = [`omg did you see that puppy`, `so many amazing natural wines`, `come to my art show!` ];
+    this.fourthBotThoughts = [`so snug`, `i miss chez boris`, `oh you know, doing adult stuff`];
+    
+  }
+  render() {
+    return (
+      <div>
+        <Chatbox title="not-so-lonely-chat a" firstBotName="sofia" firstBotThoughts={this.firstBotThoughts} 
+                secondBotName="chantal" secondBotThoughts={this.secondBotThoughts} />
+        <Chatbox title="not-so-lonely-chat b" firstBotName="anika" firstBotThoughts={this.thirdBotThoughts}
+                secondBotName="victoria" secondBotThoughts={this.fourthBotThoughts}
+        />
+      </div>
+    )
+
   }
 }
 
