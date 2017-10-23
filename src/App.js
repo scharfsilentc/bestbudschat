@@ -8,7 +8,7 @@ class Chatbox extends Component {
     this.secondBotName = this.props.secondBotName;
     this.firstBotThoughts = this.props.firstBotThoughts;
     this.secondBotThoughts = this.props.secondBotThoughts;
-    this.state = {messages:[]}; 
+    this.state = {messages:[] }; 
   }
 
   //this displays the contents of messages by storying them in <li>
@@ -34,17 +34,15 @@ class Chatbox extends Component {
       var temp = this.textInput.value;
       this.textInput.value = '';
       return {messages: st.messages.concat({who: 'you', message: temp})}
-      }
-    );  
+        }
+      );  
 
       setTimeout(this.secondBot, 1000);
       this.scrollDelete();
-    }
+  }
 
   firstBot = () => {
     //set variables
-    //this.firstBotName = "sofia";
-    // var firstBotThoughts = [`thats really cool ${this.secondBotName}`,`im so hungry`,`im going to a Wikipedia editathon later!` ];
     var i = Math.floor(Math.random()*3);
     var msg;
     if(this.state.messages.length >= 2 ){
@@ -52,7 +50,7 @@ class Chatbox extends Component {
     } else {
       msg = 'hey!'
     }
-    
+
     //talk
     this.setState((st) => {
       return {messages: st.messages.concat({who: this.firstBotName, message: msg})}
@@ -64,9 +62,6 @@ class Chatbox extends Component {
   }
   secondBot = () => { 
     //set variables
-    // this.secondBotName = "chantal";
-    // var secondBotThoughts = [`im basically a starchitect`,
-                            // `${this.firstBotName} i made some lentils`, `im not a bot btw`];
     var i = Math.floor(Math.random()*3);
     var msg;
       if(this.state.messages.length >= 3 ){
@@ -85,6 +80,7 @@ class Chatbox extends Component {
     this.scrollDelete();
   }
 
+
   scrollDelete = () => {
     if (this.state.messages.length > 10) {
       this.state.messages.shift();
@@ -95,7 +91,7 @@ class Chatbox extends Component {
     return (
       <div className="App">
           <div className="chat1">
-            <h3>{this.title}</h3>
+            <h3 onClick={this.switchChat} >{this.props.title}</h3>
             <div className="banterBox">
               <ul>
               {this.state.messages.map((element, idx) => this.displayLine(element, idx))} 
@@ -117,18 +113,35 @@ class App extends Component {
     this.firstBotThoughts = [`thats really cool chantal`,`im so hungry`,
                               `im going to a Wikipedia editathon later!`];
     this.secondBotThoughts = [`im basically a starchitect`,`sofia i made some lentils`, `im not a bot btw`];
-    this.thirdBotThoughts = [`omg did you see that puppy`, `so many amazing natural wines`, `come to my art show!` ];
+    this.thirdBotThoughts = [`omg did you see that puppy`, `so many amazing natural wines`, `come to my art opening!` ];
     this.fourthBotThoughts = [`so snug`, `i miss chez boris`, `oh you know, doing adult stuff`];
-    
+    this.state = {chatbox: 'chat1'}
   }
+
+  switchChat = (chatId) => {
+    this.setState({chatbox: chatId}) 
+  }
+
   render() {
     return (
       <div>
-        <Chatbox title="not-so-lonely-chat a" firstBotName="sofia" firstBotThoughts={this.firstBotThoughts} 
-                secondBotName="chantal" secondBotThoughts={this.secondBotThoughts} />
-        <Chatbox title="not-so-lonely-chat b" firstBotName="anika" firstBotThoughts={this.thirdBotThoughts}
-                secondBotName="victoria" secondBotThoughts={this.fourthBotThoughts}
-        />
+        <button onClick={() => this.switchChat('chat1')}>chat 1</button>
+       {this.state.chatbox === 'chat1' && 
+          <Chatbox
+            title="not-so-lonely-chat a" 
+            firstBotName="sofia" firstBotThoughts={this.firstBotThoughts} 
+            secondBotName="chantal" secondBotThoughts={this.secondBotThoughts}
+          />
+        }
+        {this.state.chatbox === 'chat2' && 
+          <Chatbox 
+            title="not-so-lonely-chat b" 
+            firstBotName="anika" firstBotThoughts={this.thirdBotThoughts}
+            secondBotName="victoria" secondBotThoughts={this.fourthBotThoughts} 
+          />
+        }
+                <button onClick={() => this.switchChat('chat2')}>chat 2</button>
+        
       </div>
     )
 
