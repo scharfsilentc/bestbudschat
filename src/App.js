@@ -30,6 +30,7 @@ class Chatbox extends Component {
   
   // this adds the message the user has inputted to a new object in the messages array
  addNewMessage = (event) => { 
+   event.preventDefault();
     this.setState( (st) => {
       var temp = this.textInput.value;
       this.textInput.value = '';
@@ -93,13 +94,15 @@ class Chatbox extends Component {
           <div className="chat1">
             <h3 onClick={this.switchChat} >{this.props.title}</h3>
             <div className="banterBox">
-              <ul>
-              {this.state.messages.map((element, idx) => this.displayLine(element, idx))} 
-              </ul>
-              <div className="inputMessage">
-                <input className ="inputArea" type = 'text' ref={(input) => {this.textInput = input; }} placeholder="put it here" />
-                <button onClick={this.addNewMessage}>say it</button>
+              <div className ="messages">
+                <ul>
+                    {this.state.messages.map((element, idx) => this.displayLine(element, idx))} 
+                  </ul>
               </div>
+              <form onSubmit={this.addNewMessage}className="inputMessage">
+                <input className ="inputArea" type = 'text' ref={(input) => {this.textInput = input; }} placeholder="put it here" />
+                <button>say it</button>
+              </form>
             </div>
           </div>
       </div>
@@ -113,7 +116,7 @@ class App extends Component {
     this.firstBotThoughts = [`thats really cool chantal`,`im so hungry`,
                               `im going to a Wikipedia editathon later!`];
     this.secondBotThoughts = [`im basically a starchitect`,`sofia i made some lentils`, `im not a bot btw`];
-    this.thirdBotThoughts = [`omg did you see that puppy`, `so many amazing natural wines`, `come to my art opening!` ];
+    this.thirdBotThoughts = [`omg did you see that puppy`, `have you ever tried natural wine?`, `come to my art opening!` ];
     this.fourthBotThoughts = [`so snug`, `i miss chez boris`, `oh you know, doing adult stuff`];
     this.state = {chatbox: 'chat1'}
   }
@@ -124,25 +127,29 @@ class App extends Component {
 
   render() {
     return (
-      <div>
-        <button onClick={() => this.switchChat('chat1')}>chat 1</button>
-       {this.state.chatbox === 'chat1' && 
-          <Chatbox
-            title="not-so-lonely-chat a" 
-            firstBotName="sofia" firstBotThoughts={this.firstBotThoughts} 
-            secondBotName="chantal" secondBotThoughts={this.secondBotThoughts}
-          />
-        }
-        {this.state.chatbox === 'chat2' && 
-          <Chatbox 
-            title="not-so-lonely-chat b" 
-            firstBotName="anika" firstBotThoughts={this.thirdBotThoughts}
-            secondBotName="victoria" secondBotThoughts={this.fourthBotThoughts} 
-          />
-        }
-                <button onClick={() => this.switchChat('chat2')}>chat 2</button>
-        
+      <div className="Container">
+        <div className="Wrapper">
+          <button onClick={() => this.switchChat('chat1')}>chat a</button>
+        {this.state.chatbox === 'chat1' && 
+            <Chatbox
+              title="not-so-lonely-chat a" 
+              firstBotName="sofia" firstBotThoughts={this.firstBotThoughts} 
+              secondBotName="chantal" secondBotThoughts={this.secondBotThoughts}
+            />
+          }
+          {this.state.chatbox === 'chat2' && 
+            <Chatbox 
+              title="not-so-lonely-chat b" 
+              firstBotName="anika" firstBotThoughts={this.thirdBotThoughts}
+              secondBotName="victoria" secondBotThoughts={this.fourthBotThoughts} 
+            />
+          }
+                  <button onClick={() => this.switchChat('chat2')}>chat b</button>
+          
+        </div>
+      
       </div>
+      
     )
 
   }
